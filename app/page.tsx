@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { server } from '@/services';
 import { useEffect, useState } from 'react';
 
@@ -9,17 +10,18 @@ export default function Home() {
   const [title, setTitle] = useState<string>('');
   const [lyrics, setLyrics] = useState<string>('');
   const [voices, setVoices] = useState<Array<any>>([]);
+  const [selectedBeatId, setSelectedBeatId] = useState<string>('');
+  const [selectedVoiceId, setSelectedVoiceId] = useState<string>('');
 
   const generateLyrics = async () => {
     try {
       const data = await server.generateLyrics({
         subject,
-        lines: 4,
+        ...(selectedBeatId ? { backingTrack: selectedBeatId } : { lines: 4 }),
       });
       const { title, lyrics } = data;
       setTitle(title);
-      setLyrics(lyrics.join('\n'));
-      console.log(data);
+      setLyrics(lyrics.length > 0 ? lyrics.pop().join('\n') : '');
     } catch (e) {
       console.log(e);
     }
@@ -34,7 +36,7 @@ export default function Home() {
         console.log(e);
       }
       try {
-        const beats = await server.fetchBackingTracks();
+        const beats = await server.fetchBackingTracks({ detailed: true });
         setBeats(beats);
       } catch (e) {
         console.log(e);
@@ -43,7 +45,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="h-screen flex flex-col bg-violet-300 p-24">
+    <main className="min-h-screen flex flex-col bg-violet-300 p-24">
       <div className="flex justify-center">
         <h1 className="text-2xl">
           AI Wrapper
@@ -53,25 +55,31 @@ export default function Home() {
       <div className="flex flex-col">
         <div className="flex flex-row my-4">
           <div className="basis-2/12 text-right px-4">
-            <label htmlFor="beats">
-              Beat:
-            </label>
+            Beat:
           </div>
-          <div className="basis-10/12 flex">
-            <select
-              id="beats"
-              className="w-full"
-            >
-              <option value="">Choose a beat</option>
-              {beats.map((beat, i) => (
-                <option
-                  key={i}
-                  value={beat.uuid}
+          <div className="basis-10/12 flex flex-col h-36 overflow-auto outlined">
+            {beats.map((beat, i) => (
+              <div key={i}>
+                <label
+                  htmlFor={`beat-${i}`}
                 >
+                  <input
+                    id={`beat-${i}`}
+                    type="radio"
+                    value={beat.uuid}
+                    checked={beat.uuid === selectedBeatId}
+                    onChange={() => setSelectedBeatId(beat.uuid)}
+                  />
                   {beat.name}
-                </option>
-              ))}
-            </select>
+                </label>
+                <audio
+                  src={beat.url}
+                  controls
+                >
+                  <track kind="captions" />
+                </audio>
+              </div>
+            ))}
           </div>
         </div>
         <div className="flex flex-row my-4">
@@ -133,7 +141,7 @@ export default function Home() {
               Voice:
             </label>
           </div>
-          <div className="basis-10/12 flex">
+          <div className="basis-10/12 flex-col h-72 overflow-auto outlined">
             <select
               id="voices"
               className="w-full"
@@ -148,6 +156,32 @@ export default function Home() {
                 </option>
               ))}
             </select>
+            {voices.map((voice, i) => (
+              <div key={i}>
+                <label
+                  htmlFor={`voice-${i}`}
+                >
+                  <input
+                    id={`voice-${i}`}
+                    type="radio"
+                    value={voice.uuid}
+                    checked={voice.voicemodel_uuid === selectedVoiceId}
+                    onChange={() => setSelectedVoiceId(voice.voicemodel_uuid)}
+                  />
+                  {voice.name}
+                </label>
+                {
+                  voice.image_url && (
+                    <Image
+                      alt={voice.display_name}
+                      src={voice.image_url}
+                      height={100}
+                      width={100}
+                    />
+                  )
+                }
+              </div>
+            ))}
           </div>
         </div>
       </div>

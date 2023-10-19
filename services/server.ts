@@ -1,27 +1,33 @@
-const client = {
-  async fetchBackingTracks(): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      const params = (new URLSearchParams()).toString();
-      const res = await fetch(`/api/backing-tracks?${params}`, {
-        method: 'GET',
-      });
-      const data = await res.json();
-      res.ok ? resolve(data) : reject(data);
+import axios from 'axios';
+
+const client = axios.create({
+  baseURL: '/api',
+});
+
+const service = {
+  async fetchBackingTracks({
+    detailed,
+  }: {
+    detailed: boolean;
+  }) {
+    const res = await client.get('/backing-tracks', {
+      params: {
+        detailed,
+      },
     });
+    return res.data;
   },
   async fetchVoices({
     mode,
   }: {
     mode: string;
-  }): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      const params = (new URLSearchParams({ mode })).toString();
-      const res = await fetch(`/api/voices?${params}`, {
-        method: 'GET',
-      });
-      const data = await res.json();
-      res.ok ? resolve(data) : reject(data);
+  }) {
+    const res = await client.get('/voices', {
+      params: {
+        mode,
+      },
     });
+    return res.data;
   },
   async generateLyrics({
     backingTrack,
@@ -30,21 +36,15 @@ const client = {
   }: {
     backingTrack?: string;
     subject: string;
-    lines: number,
-  }): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      const res = await fetch('/api/lyrics', {
-        method: 'POST',
-        body: JSON.stringify({
-          backing_track: backingTrack,
-          subject,
-          lines,
-        }),
-      });
-      const data = await res.json();
-      res.ok ? resolve(data) : reject(data);
+    lines?: number;
+  }) {
+    const res = await client.post('/lyrics', {
+      backing_track: backingTrack || null,
+      subject: subject || null,
+      lines: lines || null,
     });
+    return res.data;
   },
 };
 
-export default client;
+export default service;

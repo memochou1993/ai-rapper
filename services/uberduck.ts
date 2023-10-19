@@ -7,8 +7,12 @@ const {
 const revalidate = 60 * 60;
 const token = Buffer.from(`${publicKey}:${secretKey}`).toString('base64');
 
-const client = {
+const service = {
   async fetchBackingTracks(params: URLSearchParams): Promise<Response> {
+    // Return fake data for testing
+    if (process.env.APP_ENV === 'local') {
+      return fetch('https://json.epoch.tw/api/records/wMvbmw0eYA');
+    }
     return fetch(`${baseURL}/reference-audio/backing-tracks?${params.toString()}`, {
       method: 'GET',
       next: {
@@ -18,6 +22,10 @@ const client = {
     });
   },
   async fetchVoices(params: URLSearchParams): Promise<Response> {
+    // Return fake data for testing
+    if (process.env.APP_ENV === 'local') {
+      return fetch('https://json.epoch.tw/api/records/Volej25ejN');
+    }
     return fetch(`${baseURL}/voices?${params.toString()}`, {
       method: 'GET',
       next: {
@@ -27,6 +35,7 @@ const client = {
     });
   },
   async generateLyrics(data: any): Promise<Response> {
+    // Return fake data for testing
     if (process.env.APP_ENV === 'local') {
       return fetch('https://json.epoch.tw/api/records/OpnelO6dKB');
     }
@@ -42,4 +51,4 @@ const client = {
   },
 };
 
-export default client;
+export default service;
