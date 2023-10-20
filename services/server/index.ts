@@ -1,5 +1,7 @@
+import {
+  UberduckBackingTracking, UberduckFreestyle, UberduckLyrics, UberduckVoice,
+} from '@/structures/uberduck';
 import axios from 'axios';
-import { Freestyle } from './models';
 
 const client = axios.create({
   baseURL: '/api',
@@ -16,7 +18,7 @@ const service = {
         detailed,
       },
     });
-    return res.data;
+    return res.data.map((v: any) => new UberduckBackingTracking(v));
   },
   async fetchVoices({
     mode,
@@ -28,7 +30,7 @@ const service = {
         mode,
       },
     });
-    return res.data;
+    return res.data.map((v: any) => new UberduckVoice(v));
   },
   async generateLyrics({
     backingTrack,
@@ -44,7 +46,7 @@ const service = {
       subject: subject || null,
       lines: lines || null,
     });
-    return res.data;
+    return new UberduckLyrics(res.data);
   },
   async generateFreestyles({
     bpm,
@@ -54,16 +56,16 @@ const service = {
   }: {
     bpm: number;
     backingTrack: string;
-    lyrics: Array<string>;
+    lyrics: string[];
     voicemodelUuid: string;
-  }): Promise<Freestyle> {
+  }) {
     const res = await client.post('/freestyles', {
       bpm: bpm || null,
       backing_track: backingTrack || null,
       lyrics: lyrics || null,
       voicemodel_uuid: voicemodelUuid || null,
     });
-    return new Freestyle(res.data);
+    return new UberduckFreestyle(res.data);
   },
 };
 

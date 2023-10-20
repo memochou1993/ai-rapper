@@ -1,4 +1,5 @@
 import { uberduck } from '@/services';
+import { UberduckLyrics } from '@/structures/uberduck';
 import { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
@@ -15,5 +16,6 @@ export async function POST(req: NextRequest) {
   if (!res.ok) {
     return Response.json({ error: data }, { status: res.status });
   }
-  return Response.json(data);
+  const item = new UberduckLyrics(data);
+  return Response.json(item);
 }

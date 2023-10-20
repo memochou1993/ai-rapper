@@ -1,6 +1,10 @@
 {
-    "cSpell.words": [
-        "uberduck",
-        "voicemodel"
-    ]
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": true
+  },
+  "cSpell.words": [
+    "uberduck",
+    "voicemodel"
+  ]
 }

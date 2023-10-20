@@ -1,4 +1,5 @@
 import { uberduck } from '@/services';
+import { UberduckVoice } from '@/structures/uberduck';
 import { NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -15,5 +16,6 @@ export async function GET(req: NextRequest) {
   if (!res.ok) {
     return Response.json({ error: data }, { status: res.status });
   }
-  return Response.json(data);
+  const items = data.map((v: any) => new UberduckVoice(v));
+  return Response.json(items);
 }

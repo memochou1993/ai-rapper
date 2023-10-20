@@ -1,4 +1,5 @@
 import { uberduck } from '@/services';
+import { UberduckBackingTracking } from '@/structures/uberduck';
 import { NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest) {
@@ -15,5 +16,6 @@ export async function GET(req: NextRequest) {
   if (!res.ok) {
     return Response.json({ error: data }, { status: res.status });
   }
-  return Response.json(data.backing_tracks);
+  const items = data.backing_tracks.map((v: any) => new UberduckBackingTracking(v));
+  return Response.json(items);
 }

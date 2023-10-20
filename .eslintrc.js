@@ -7,6 +7,7 @@ module.exports = {
     React: 'readonly',
   },
   rules: {
+    camelcase: 'off',
     'jsx-a11y/label-has-associated-control': 'off',
     'no-async-promise-executor': 'off',
     'no-console': 'off',

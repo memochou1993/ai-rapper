@@ -1,19 +1,19 @@
 'use client';
 
-import Image from 'next/image';
 import { server } from '@/services';
+import { UberduckBackingTracking, UberduckFreestyle, UberduckVoice } from '@/structures/uberduck';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { Freestyle } from '@/services/server/models';
 
 export default function Home() {
-  const [beats, setBeats] = useState<Array<any>>([]);
+  const [beats, setBeats] = useState<UberduckBackingTracking[]>([]);
   const [subject, setSubject] = useState<string>('Hello, World');
   const [title, setTitle] = useState<string>('');
   const [lyrics, setLyrics] = useState<string>('');
-  const [voices, setVoices] = useState<Array<any>>([]);
+  const [voices, setVoices] = useState<UberduckVoice[]>([]);
   const [selectedBeatId, setSelectedBeatId] = useState<string>('');
   const [selectedVoiceId, setSelectedVoiceId] = useState<string>('');
-  const [freestyle, setFreestyle] = useState<Freestyle|null>(null);
+  const [freestyle, setFreestyle] = useState<UberduckFreestyle|null>(null);
 
   useEffect(() => {
     (async () => {
@@ -40,7 +40,7 @@ export default function Home() {
       });
       const { title, lyrics } = data;
       setTitle(title);
-      setLyrics(lyrics.length > 0 ? lyrics.pop().join('\n') : '');
+      setLyrics(lyrics.length > 0 ? lyrics[0].join('\n') : '');
     } catch (e) {
       console.log(e);
     }
@@ -84,7 +84,7 @@ export default function Home() {
                     type="radio"
                     value={beat.uuid}
                     checked={beat.uuid === selectedBeatId}
-                    onChange={() => setSelectedBeatId(beat.uuid)}
+                    onChange={(v) => setSelectedBeatId(v.target.value)}
                   />
                   {beat.name}
                 </label>
@@ -166,7 +166,7 @@ export default function Home() {
               {voices.map((voice, i) => (
                 <option
                   key={i}
-                  value={voice.voicemodel_uuid}
+                  value={voice.voicemodelUuid}
                 >
                   {voice.name}
                 </option>
@@ -180,17 +180,17 @@ export default function Home() {
                   <input
                     id={`voice-${i}`}
                     type="radio"
-                    value={voice.uuid}
-                    checked={voice.voicemodel_uuid === selectedVoiceId}
-                    onChange={() => setSelectedVoiceId(voice.voicemodel_uuid)}
+                    value={voice.voicemodelUuid}
+                    checked={voice.voicemodelUuid === selectedVoiceId}
+                    onChange={(e) => setSelectedVoiceId(e.target.value)}
                   />
                   {voice.name}
                 </label>
                 {
-                  voice.image_url && (
+                  voice.imageUrl && (
                     <Image
-                      alt={voice.display_name}
-                      src={voice.image_url}
+                      alt={voice.displayName}
+                      src={voice.imageUrl}
                       height={100}
                       width={100}
                     />
