@@ -13,24 +13,24 @@ const service = {
   }: {
     detailed: boolean;
   }) {
-    const res = await client.get('/backing-tracks', {
+    const res = await client.get('/music/backing-tracks', {
       params: {
         detailed,
       },
     });
-    return res.data.map((v: any) => new UberduckBackingTracking(v));
+    return res.data.data.map((v: any) => new UberduckBackingTracking(v));
   },
   async fetchVoices({
     mode,
   }: {
     mode: string;
   }) {
-    const res = await client.get('/voices', {
+    const res = await client.get('/music/voices', {
       params: {
         mode,
       },
     });
-    return res.data.map((v: any) => new UberduckVoice(v));
+    return res.data.data.map((v: any) => new UberduckVoice(v));
   },
   async generateLyrics({
     backingTrack,
@@ -41,12 +41,12 @@ const service = {
     subject: string;
     lines?: number;
   }) {
-    const res = await client.post('/lyrics', {
+    const res = await client.post('/music/lyrics', {
       backing_track: backingTrack || null,
       subject: subject || null,
       lines: lines || null,
     });
-    return new UberduckLyrics(res.data);
+    return new UberduckLyrics(res.data.data);
   },
   async generateFreestyles({
     bpm,
@@ -59,13 +59,13 @@ const service = {
     lyrics: string[];
     voicemodelUuid: string;
   }) {
-    const res = await client.post('/freestyles', {
+    const res = await client.post('/music/freestyles', {
       bpm: bpm || null,
       backing_track: backingTrack || null,
       lyrics: lyrics || null,
       voicemodel_uuid: voicemodelUuid || null,
     });
-    return new UberduckFreestyle(res.data);
+    return new UberduckFreestyle(res.data.data);
   },
 };
 
