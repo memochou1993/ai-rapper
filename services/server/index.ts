@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Freestyle } from './models';
 
 const client = axios.create({
   baseURL: '/api',
@@ -44,6 +45,25 @@ const service = {
       lines: lines || null,
     });
     return res.data;
+  },
+  async generateFreestyles({
+    bpm,
+    backingTrack,
+    lyrics,
+    voicemodelUuid,
+  }: {
+    bpm: number;
+    backingTrack: string;
+    lyrics: Array<string>;
+    voicemodelUuid: string;
+  }): Promise<Freestyle> {
+    const res = await client.post('/freestyles', {
+      bpm: bpm || null,
+      backing_track: backingTrack || null,
+      lyrics: lyrics || null,
+      voicemodel_uuid: voicemodelUuid || null,
+    });
+    return new Freestyle(res.data);
   },
 };
 

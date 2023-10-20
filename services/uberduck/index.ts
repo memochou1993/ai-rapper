@@ -49,6 +49,21 @@ const service = {
       },
     });
   },
+  async generateFreestyle(data: any): Promise<Response> {
+    // Return fake data for testing
+    if (process.env.APP_ENV === 'local') {
+      return fetch('https://json.epoch.tw/api/records/4openZle7A');
+    }
+    return fetch(`${baseURL}/tts/freestyle`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        Authorization: `Basic ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+  },
 };
 
 export default service;

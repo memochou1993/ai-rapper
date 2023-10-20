@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { server } from '@/services';
 import { useEffect, useState } from 'react';
+import { Freestyle } from '@/services/server/models';
 
 export default function Home() {
   const [beats, setBeats] = useState<Array<any>>([]);
@@ -12,20 +13,7 @@ export default function Home() {
   const [voices, setVoices] = useState<Array<any>>([]);
   const [selectedBeatId, setSelectedBeatId] = useState<string>('');
   const [selectedVoiceId, setSelectedVoiceId] = useState<string>('');
-
-  const generateLyrics = async () => {
-    try {
-      const data = await server.generateLyrics({
-        subject,
-        ...(selectedBeatId ? { backingTrack: selectedBeatId } : { lines: 4 }),
-      });
-      const { title, lyrics } = data;
-      setTitle(title);
-      setLyrics(lyrics.length > 0 ? lyrics.pop().join('\n') : '');
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  const [freestyle, setFreestyle] = useState<Freestyle|null>(null);
 
   useEffect(() => {
     (async () => {
@@ -43,6 +31,34 @@ export default function Home() {
       }
     })();
   }, []);
+
+  const generateLyrics = async () => {
+    try {
+      const data = await server.generateLyrics({
+        subject,
+        ...(selectedBeatId ? { backingTrack: selectedBeatId } : { lines: 4 }),
+      });
+      const { title, lyrics } = data;
+      setTitle(title);
+      setLyrics(lyrics.length > 0 ? lyrics.pop().join('\n') : '');
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const generateFreestyles = async () => {
+    try {
+      const data = await server.generateFreestyles({
+        bpm: 90,
+        backingTrack: selectedBeatId,
+        lyrics: lyrics.split('\n'),
+        voicemodelUuid: selectedVoiceId,
+      });
+      setFreestyle(data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <main className="min-h-screen flex flex-col bg-violet-300 p-24">
@@ -182,6 +198,31 @@ export default function Home() {
                 }
               </div>
             ))}
+          </div>
+        </div>
+        <div className="flex flex-row justify-center my-4">
+          <div className="basis-12/12 flex">
+            <button
+              type="button"
+              className="bg-gray-300"
+              onClick={generateFreestyles}
+            >
+              Generate
+            </button>
+          </div>
+        </div>
+        <div className="flex flex-row justify-center my-4">
+          <div className="basis-12/12 flex">
+            {freestyle && (
+              <div>
+                <audio
+                  src={freestyle.mixUrl}
+                  controls
+                >
+                  <track kind="captions" />
+                </audio>
+              </div>
+            )}
           </div>
         </div>
       </div>
