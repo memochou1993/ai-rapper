@@ -1,13 +1,14 @@
 import { uberduck } from '@/services';
 import { ServerResponse } from '@/structures/server';
 import { UberduckLyrics } from '@/structures/uberduck';
+import { logRequest } from '@/utils';
 import { NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
+  logRequest(req);
   try {
     // Handle JSON parsing failure
     const payload = await req.json();
-    console.log('Received payload from client', payload);
     const res = await uberduck.generateLyrics(payload);
     // Handle JSON parsing failure
     const data = await res.json();

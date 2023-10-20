@@ -34,6 +34,19 @@ const service = {
       },
     });
   },
+  async fetchVoice(id: string): Promise<Response> {
+    // Return fake data for testing
+    if (process.env.APP_ENV === 'local') {
+      return fetch('https://json.epoch.tw/api/records/WJxboYKegw');
+    }
+    return fetch(`${baseURL}/voices/${id}/detail`, {
+      method: 'GET',
+      next: {
+        revalidate,
+        tags: [`id=${id}`],
+      },
+    });
+  },
   async generateLyrics(data: any): Promise<Response> {
     // Return fake data for testing
     if (process.env.APP_ENV === 'local') {

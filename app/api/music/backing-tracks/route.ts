@@ -1,12 +1,13 @@
 import { uberduck } from '@/services';
 import { ServerResponse } from '@/structures/server';
 import { UberduckBackingTracking } from '@/structures/uberduck';
+import { logRequest } from '@/utils';
 import { NextRequest } from 'next/server';
 
 export async function GET(req: NextRequest) {
+  logRequest(req);
   try {
     const payload = req.nextUrl.searchParams;
-    console.log('Received payload from client', payload);
     const res = await uberduck.fetchBackingTracks(payload);
     // Handle JSON parsing failure
     const data = await res.json();

@@ -4,18 +4,18 @@ import { UberduckVoice } from '@/structures/uberduck';
 import { logRequest } from '@/utils';
 import { NextRequest } from 'next/server';
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   logRequest(req);
+  const { id } = params;
   try {
-    const payload = req.nextUrl.searchParams;
-    const res = await uberduck.fetchVoices(payload);
+    const res = await uberduck.fetchVoice(id);
     // Handle JSON parsing failure
     const data = await res.json();
     if (!res.ok) {
       return Response.json(new ServerResponse({ error: data }), { status: res.status });
     }
-    const items = data.map((v: any) => new UberduckVoice(v));
-    return Response.json(new ServerResponse({ data: items }));
+    const item = new UberduckVoice(data);
+    return Response.json(new ServerResponse({ data: item }));
   } catch (e: any) {
     return Response.json(new ServerResponse({ error: e.message }), { status: 500 });
   }
