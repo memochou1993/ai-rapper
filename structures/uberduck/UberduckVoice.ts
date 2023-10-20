@@ -1,3 +1,8 @@
+export interface VoiceSample {
+  transcription: string;
+  url: string;
+}
+
 export interface VoiceParams {
   added_at: number;
   addedAt: number;
@@ -15,6 +20,11 @@ export interface VoiceParams {
   is_primary: boolean;
   isPrimary: boolean;
   name: string;
+  voice_actor: string;
+  voiceActor: string;
+  tags: any[];
+  images: any[];
+  samples: VoiceSample[];
   symbol_set: string;
   symbolSet: string;
   voicemodel_uuid: string;
@@ -34,6 +44,7 @@ export interface VoiceParams {
   description: string | null;
   image_url: string;
   imageUrl: string;
+  features: string[];
 }
 
 export default class Voice {
@@ -59,6 +70,14 @@ export default class Voice {
 
   name: string;
 
+  voiceActor: string;
+
+  tags: any[];
+
+  images: any[];
+
+  samples: VoiceSample[];
+
   symbolSet: string;
 
   voicemodelUuid: string;
@@ -85,6 +104,8 @@ export default class Voice {
 
   imageUrl: string;
 
+  features: string[];
+
   constructor(params: VoiceParams) {
     this.addedAt = params.added_at ?? params.addedAt;
     this.architecture = params.architecture;
@@ -97,6 +118,10 @@ export default class Voice {
     this.isPrivate = params.is_private ?? params.isPrivate;
     this.isPrimary = params.is_primary ?? params.isPrimary;
     this.name = params.name;
+    this.voiceActor = params.voice_actor ?? params.voiceActor;
+    this.tags = params.tags;
+    this.images = params.images;
+    this.samples = params.samples;
     this.symbolSet = params.symbol_set ?? params.symbolSet;
     this.voicemodelUuid = params.voicemodel_uuid ?? params.voicemodelUuid;
     this.hifiGanVocoder = params.hifi_gan_vocoder ?? params.hifiGanVocoder;
@@ -110,5 +135,6 @@ export default class Voice {
     this.age = params.age;
     this.description = params.description;
     this.imageUrl = params.image_url ?? params.imageUrl;
+    this.features = params.features;
   }
 }

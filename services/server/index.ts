@@ -32,6 +32,18 @@ const service = {
     });
     return res.data.data.map((v: any) => new UberduckVoice(v));
   },
+  async fetchVoice({
+    id,
+  }: {
+    id: string;
+  }) {
+    const res = await client.get(`/music/voices/${id}`, {
+      params: {
+        id,
+      },
+    });
+    return new UberduckVoice(res.data.data);
+  },
   async generateLyrics({
     backingTrack,
     subject,

@@ -32,6 +32,25 @@ export default function Home() {
     })();
   }, []);
 
+  const fetchVoice = async (id: string) => {
+    try {
+      const data = await server.fetchVoice({
+        id,
+      });
+      const updated = voices.map((voice) => {
+        if (voice.voicemodelUuid === id) {
+          return Object.assign(voice, {
+            samples: data.samples,
+          });
+        }
+        return voice;
+      });
+      setVoices(updated);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const generateLyrics = async () => {
     try {
       const data = await server.generateLyrics({
@@ -75,7 +94,7 @@ export default function Home() {
           </div>
           <div className="basis-10/12 flex flex-col h-36 overflow-auto outlined">
             {beats.map((beat, i) => (
-              <div key={i}>
+              <div key={i} className="mb-4">
                 <label
                   htmlFor={`beat-${i}`}
                 >
@@ -158,22 +177,8 @@ export default function Home() {
             </label>
           </div>
           <div className="basis-10/12 flex-col h-72 overflow-auto outlined">
-            <select
-              id="voices"
-              className="w-full"
-            >
-              <option value="">Choose a voice</option>
-              {voices.map((voice, i) => (
-                <option
-                  key={i}
-                  value={voice.voicemodelUuid}
-                >
-                  {voice.name}
-                </option>
-              ))}
-            </select>
             {voices.map((voice, i) => (
-              <div key={i}>
+              <div key={i} className="mb-4">
                 <label
                   htmlFor={`voice-${i}`}
                 >
@@ -196,6 +201,25 @@ export default function Home() {
                     />
                   )
                 }
+                <button
+                  type="button"
+                  className="bg-gray-300"
+                  onClick={() => fetchVoice(voice.voicemodelUuid)}
+                >
+                  Show Samples
+                </button>
+                {voice.samples && (
+                  voice.samples.map((sample, i) => (
+                    <div key={i}>
+                      <audio
+                        src={sample.url}
+                        controls
+                      >
+                        <track kind="captions" />
+                      </audio>
+                    </div>
+                  ))
+                )}
               </div>
             ))}
           </div>
