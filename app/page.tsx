@@ -172,9 +172,7 @@ export default function Home() {
         </div>
         <div className="flex flex-row my-4">
           <div className="basis-2/12 text-right px-4">
-            <label htmlFor="voices">
-              Voice:
-            </label>
+            Voice:
           </div>
           <div className="basis-10/12 flex-col h-72 overflow-auto outlined">
             {voices.map((voice, i) => (
