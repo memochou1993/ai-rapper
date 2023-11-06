@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  uuid           String     @id @db.Char(36)
+  id             String     @unique @db.VarChar(255)
+  name           String     @db.VarChar(255)
+  username       String     @unique @db.VarChar(255)
+  email          String     @db.VarChar(255)
+  avatar         String     @db.VarChar(255)
+  wallet_address String     @db.Char(42)
+  is_pro         Boolean
+  deleted_at     DateTime?
+  created_at     DateTime
+  updated_at     DateTime
+  Creation       Creation[]
+
+  @@map("users")
+}
+
+model Creation {
+  uuid                        String    @id @db.Char(36)
+  name                        String    @db.VarChar(255)
+  description                 String?   @db.Text
+  image_path                  String    @db.VarChar(255)
+  audio_path                  String    @db.VarChar(255)
+  lyrics                      Json?
+  uberduck_backing_track_uuid String    @db.Char(36)
+  uberduck_voicemodel_uuid    String    @db.Char(36)
+  uberduck_freestyle_uuid     String    @db.Char(36)
+  user_uuid                   String    @db.Char(36)
+  published_at                DateTime?
+  deleted_at                  DateTime?
+  created_at                  DateTime
+  updated_at                  DateTime
+  user                        User      @relation(fields: [user_uuid], references: [uuid])
+
+  @@map("creations")
+}
