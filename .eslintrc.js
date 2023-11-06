@@ -11,6 +11,8 @@ module.exports = {
     'jsx-a11y/label-has-associated-control': 'off',
     'no-async-promise-executor': 'off',
     'no-console': 'off',
+    'no-param-reassign': 'off',
+    'no-restricted-exports': 'off',
     'no-shadow': 'off',
     'no-unused-expressions': 'off',
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
