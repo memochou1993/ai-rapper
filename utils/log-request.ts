@@ -10,7 +10,7 @@ const logRequest = async (req: NextRequest) => {
     body = await cloned.text();
   }
 
-  console.table({
+  console.log({
     method: req.method,
     url: req.nextUrl.href,
     body,
